@@ -19,9 +19,19 @@ body {
     justify-content: center;
     align-items: center;
     margin: 0 10px;
+    overflow: hidden;
 }
 
 button {
     font-size: 1em;
     padding: 10px 20px;
+}
+
+@keyframes spin {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-100%); }
+}
+
+.spin {
+    animation: spin 1s linear infinite;
 }
