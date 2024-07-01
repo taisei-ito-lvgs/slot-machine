@@ -8,7 +8,7 @@ const stopButton = document.getElementById('stop-button');
 let spinningInterval = null;
 let stopCount = 0;
 
-const symbolHeight = 50; // Height of each symbol in pixels
+const symbolHeight = 100; // Increased height of each symbol in pixels
 const symbolsToShow = 3; // Number of symbols visible in the reel
 
 // Define target symbols for each reel
@@ -25,28 +25,17 @@ function clearReelContent(reel) {
     }
 }
 
-function shuffleSymbols() {
-    for (let i = symbols.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [symbols[i], symbols[j]] = [symbols[j], symbols[i]];
-    }
-}
-
 function createReelContent(reel, targetSymbol) {
     const reelInner = reel.querySelector('.reel-inner');
     shuffleSymbols(); // Shuffle symbols before creating content
     const index = symbols.indexOf(targetSymbol);
     const adjustedSymbols = symbols.slice(index).concat(symbols.slice(0, index));
-    for (let i = 0; i < adjustedSymbols.length; i++) {
-        const symbolElement = document.createElement('div');
-        symbolElement.className = 'symbol';
-        symbolElement.textContent = adjustedSymbols[i];
-        reelInner.appendChild(symbolElement);
-    }
     
-    // Add extra symbols to fill the reel
-    const symbolsNeeded = Math.ceil(reel.clientHeight / symbolHeight);
-    for (let i = 0; i < symbolsNeeded; i++) {
+    // Clear any existing content
+    clearReelContent(reel);
+
+    // Create symbols to fill the reel
+    for (let i = 0; i < adjustedSymbols.length + symbolsToShow; i++) {
         const symbolElement = document.createElement('div');
         symbolElement.className = 'symbol';
         symbolElement.textContent = adjustedSymbols[i % adjustedSymbols.length];
@@ -98,8 +87,10 @@ function startSpin() {
         if (stopCount === 3) {
             clearInterval(spinningInterval);
             spinningInterval = null;
+        } else {
+            updateSymbolsDuringSpin();
         }
-    }, 100); // Adjusted speed for smoother appearance
+    }, 1500); // Adjusted interval for slower spin
 }
 
 function stopReel(count) {
@@ -140,4 +131,11 @@ function adjustStopPosition(reel, targetSymbol) {
 
 function determineStoppedSymbols() {
     // No need to update symbols since they are set initially
+}
+
+function shuffleSymbols() {
+    for (let i = symbols.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [symbols[i], symbols[j]] = [symbols[j], symbols[i]];
+    }
 }

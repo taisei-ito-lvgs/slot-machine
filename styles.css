@@ -54,5 +54,5 @@ button {
 }
 
 .spin {
-    animation: spin 2s linear infinite; /* Slowed down for smoother appearance */
+    animation: spin 4s linear infinite; /* Slowed down for smoother appearance */
 }
