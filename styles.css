@@ -12,14 +12,23 @@ body {
 
 .reel {
     font-size: 2em;
-    width: 50px;
-    height: 50px;
+    width: 100px; /* Doubled width for larger reels */
+    height: 300px; /* 3 symbols tall */
     border: 1px solid #ccc;
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 0 10px;
     overflow: hidden;
+    position: relative;
+}
+
+.symbol {
+    font-size: 2em;
+    height: 100px; /* Doubled height for larger symbols */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 button {
@@ -29,9 +38,9 @@ button {
 
 @keyframes spin {
     0% { transform: translateY(0); }
-    100% { transform: translateY(-100%); }
+    100% { transform: translateY(-600%); } /* Adjusted for smoother transition */
 }
 
 .spin {
-    animation: spin 1s linear infinite;
+    animation: spin 2s linear infinite; /* Slowed down for smoother appearance */
 }
