@@ -4,19 +4,6 @@ body {
     margin-top: 50px;
 }
 
-.title {
-    font-size: 2em;
-    margin-bottom: 20px;
-}
-
-.slot {
-    color: #fa96c8;
-}
-
-.machine {
-    color: #4d2922;
-}
-
 .slot-machine {
     display: flex;
     justify-content: center;
@@ -58,6 +45,23 @@ button {
     padding: 10px 20px;
 }
 
+.stop-button {
+    border-radius: 50%; /* Make the button round */
+    background-color: #4d2922; /* Button background color */
+    color: #fa96c8; /* Button text color */
+    width: 60px; /* Width of the button */
+    height: 60px; /* Height of the button */
+    font-size: 1em;
+    border: none; /* Remove border */
+    cursor: pointer; /* Change cursor to pointer */
+    margin: 5px; /* Margin for spacing */
+}
+
+.stop-button:disabled {
+    opacity: 0.5; /* Make disabled button semi-transparent */
+    cursor: not-allowed; /* Change cursor for disabled button */
+}
+
 @keyframes spin {
     0% { transform: translateY(0); }
     100% { transform: translateY(-600%); } /* Adjusted for smoother transition */
@@ -65,4 +69,17 @@ button {
 
 .spin {
     animation: spin 4s linear infinite; /* Slowed down for smoother appearance */
+}
+
+.title {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.title .slot {
+    color: #fa96c8;
+}
+
+.title .machine {
+    color: #4d2922;
 }
