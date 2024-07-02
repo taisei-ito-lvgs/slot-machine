@@ -4,6 +4,19 @@ body {
     margin-top: 50px;
 }
 
+.title {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.slot {
+    color: #fa96c8;
+}
+
+.machine {
+    color: #4d2922;
+}
+
 .slot-machine {
     display: flex;
     justify-content: center;
@@ -35,12 +48,9 @@ body {
     box-sizing: border-box;
 }
 
-.symbol {
-    font-size: 2em;
-    height: 100px; /* Doubled height for larger symbols */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.symbol img {
+    width: 80px; /* Adjust width of the symbol image */
+    height: 80px; /* Adjust height of the symbol image */
 }
 
 button {
