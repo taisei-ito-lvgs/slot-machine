@@ -4,8 +4,8 @@ This is a simple slot machine web application.
 
 ## How to Use
 
-1. Open `index.html` in your web browser.
-2. Click the "Spin" button to spin the reels.
+1. Open `index.html` in your web browser. ($ python3 -m http.server 8000)
+2. Click the "START" button to spin the reels.
 
 ## Files
 
