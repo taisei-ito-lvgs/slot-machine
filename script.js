@@ -1,18 +1,32 @@
-const symbols = ['🍒', '🍋', '🍉', '🍇', '🍓', '🍍', '🥝', '🍏', '🍌', '🍊'];
+// Initial symbols array (default values(sample))
+let symbols = [
+    'https://www.inside-games.jp/imgs/ogp_f/1103894.jpg',
+    'https://www.inside-games.jp/imgs/zoom/1103869.jpg',
+    'https://static-cdn.jtvnw.net/jtv_user_pictures/cda793c5-a533-4b7c-9412-d4f364a732d2-profile_image-300x300.png',
+    'https://yt3.googleusercontent.com/76a_ty_OwF-nJWNuuxxeJokcgqlmkKCHwXSto9cKKkyjPO2agiu5Tc7t4f6dz5uaab7X8U5mVQ=s900-c-k-c0x00ffffff-no-rj',
+    'https://i.pinimg.com/originals/c1/85/0c/c1850cb4e7b0642ffeab9e05f1be51ec.jpg',
+    'https://i.pinimg.com/736x/0f/b3/c2/0fb3c251b84cad528463611c096dba49.jpg',
+    'https://pbs.twimg.com/ext_tw_video_thumb/1628723515217313793/pu/img/q_hueUe40AtuOzqA.jpg:large',
+    'https://pbs.twimg.com/media/FppenKFaEAAghoM.jpg:large'
+];
+
 const reel1 = document.getElementById('reel1');
 const reel2 = document.getElementById('reel2');
 const reel3 = document.getElementById('reel3');
 const startButton = document.getElementById('start-button');
 const stopButton = document.getElementById('stop-button');
+const messageElement = document.getElementById('message');
+const symbolsInput = document.getElementById('symbols-input');
+const setSymbolsButton = document.getElementById('set-symbols-button');
 
-let spinningInterval = null;
+let spinningIntervals = [null, null, null];
 let stopCount = 0;
 
-const symbolHeight = 100; // Increased height of each symbol in pixels
+const symbolHeight = 100; // Height of each symbol in pixels
 const symbolsToShow = 3; // Number of symbols visible in the reel
 
 // Define target symbols for each reel
-const targetSymbols = [
+let targetSymbols = [
     symbols[Math.floor(Math.random() * symbols.length)],
     symbols[Math.floor(Math.random() * symbols.length)],
     symbols[Math.floor(Math.random() * symbols.length)]
@@ -27,7 +41,6 @@ function clearReelContent(reel) {
 
 function createReelContent(reel, targetSymbol) {
     const reelInner = reel.querySelector('.reel-inner');
-    shuffleSymbols(); // Shuffle symbols before creating content
     const index = symbols.indexOf(targetSymbol);
     const adjustedSymbols = symbols.slice(index).concat(symbols.slice(0, index));
     
@@ -38,7 +51,10 @@ function createReelContent(reel, targetSymbol) {
     for (let i = 0; i < adjustedSymbols.length + symbolsToShow; i++) {
         const symbolElement = document.createElement('div');
         symbolElement.className = 'symbol';
-        symbolElement.textContent = adjustedSymbols[i % adjustedSymbols.length];
+        const symbolImg = document.createElement('img'); // Create img element
+        symbolImg.src = adjustedSymbols[i % adjustedSymbols.length]; // Set src attribute to image URL
+        symbolImg.style.height = `${symbolHeight}px`; // Set height (adjust as needed)
+        symbolElement.appendChild(symbolImg);
         reelInner.appendChild(symbolElement);
     }
 }
@@ -49,20 +65,34 @@ createReelContent(reel2, targetSymbols[1]);
 createReelContent(reel3, targetSymbols[2]);
 
 startButton.addEventListener('click', function() {
-    if (!spinningInterval) {
+    if (!spinningIntervals.some(interval => interval !== null)) {
         startSpin();
     }
 });
 
 stopButton.addEventListener('click', function() {
-    if (spinningInterval && stopCount < 3) {
+    if (stopCount < 3) {
         stopCount++;
         stopReel(stopCount);
         if (stopCount === 3) {
             stopButton.disabled = true;
             startButton.disabled = false;
-            determineStoppedSymbols();
         }
+    }
+});
+
+setSymbolsButton.addEventListener('click', function() {
+    const input = symbolsInput.value;
+    if (input) {
+        symbols = input.split(',').map(url => url.trim());
+        targetSymbols = [
+            symbols[Math.floor(Math.random() * symbols.length)],
+            symbols[Math.floor(Math.random() * symbols.length)],
+            symbols[Math.floor(Math.random() * symbols.length)]
+        ];
+        createReelContent(reel1, targetSymbols[0]);
+        createReelContent(reel2, targetSymbols[1]);
+        createReelContent(reel3, targetSymbols[2]);
     }
 });
 
@@ -75,62 +105,36 @@ function startSpin() {
     createReelContent(reel2, targetSymbols[1]);
     createReelContent(reel3, targetSymbols[2]);
 
-    reel1.firstElementChild.classList.add('spin');
-    reel2.firstElementChild.classList.add('spin');
-    reel3.firstElementChild.classList.add('spin');
-    
     startButton.disabled = true;
     stopButton.disabled = false;
 
-    // Set interval for spinning
-    spinningInterval = setInterval(function() {
-        if (stopCount === 3) {
-            clearInterval(spinningInterval);
-            spinningInterval = null;
-        } else {
-            updateSymbolsDuringSpin();
-        }
-    }, 1500); // Adjusted interval for slower spin
+    spinningIntervals[0] = setInterval(() => shiftSymbols(reel1), 100); // Adjusted interval for slower spin
+    spinningIntervals[1] = setInterval(() => shiftSymbols(reel2), 100); // Adjusted interval for slower spin
+    spinningIntervals[2] = setInterval(() => shiftSymbols(reel3), 100); // Adjusted interval for slower spin
 }
 
 function stopReel(count) {
     switch (count) {
         case 1:
-            reel1.firstElementChild.classList.remove('spin');
-            adjustStopPosition(reel1, targetSymbols[0]);
+            clearInterval(spinningIntervals[0]);
+            spinningIntervals[0] = null;
             break;
         case 2:
-            reel2.firstElementChild.classList.remove('spin');
-            adjustStopPosition(reel2, targetSymbols[1]);
+            clearInterval(spinningIntervals[1]);
+            spinningIntervals[1] = null;
             break;
         case 3:
-            reel3.firstElementChild.classList.remove('spin');
-            adjustStopPosition(reel3, targetSymbols[2]);
+            clearInterval(spinningIntervals[2]);
+            spinningIntervals[2] = null;
             break;
     }
 }
 
-function adjustStopPosition(reel, targetSymbol) {
+function shiftSymbols(reel) {
     const reelInner = reel.querySelector('.reel-inner');
-    const currentOffset = reelInner.offsetTop % (symbols.length * symbolHeight);
-    let moveAmount = Math.floor(currentOffset / symbolHeight) * symbolHeight;
-    
-    // Determine position of target symbol
-    const targetIndex = symbols.indexOf(targetSymbol);
-    const targetPosition = targetIndex * symbolHeight;
-
-    // Calculate final position based on target position
-    const totalReelHeight = symbols.length * symbolHeight;
-    let finalPosition = totalReelHeight + targetPosition - moveAmount;
-
-    // Set position within the symbol range
-    finalPosition %= totalReelHeight;
-
-    reelInner.style.transform = `translateY(-${finalPosition}px)`;
-}
-
-function determineStoppedSymbols() {
-    // No need to update symbols since they are set initially
+    const firstSymbol = reelInner.firstElementChild;
+    reelInner.appendChild(firstSymbol.cloneNode(true));
+    reelInner.removeChild(firstSymbol);
 }
 
 function shuffleSymbols() {
